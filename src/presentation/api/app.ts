@@ -9,6 +9,22 @@ import { SEO_PRESETS } from '../../domain/value-objects/SeoConfig';
 
 const app = express();
 
+const mapJobUrlResult = (item: any) => ({
+  id: item.id,
+  jobId: item.jobId,
+  url: item.url,
+  status: item.status,
+  metaTitle: item.generatedTitle ?? item.originalTitle ?? null,
+  metaDescription: item.generatedDescription ?? null,
+  originalTitle: item.originalTitle ?? null,
+  originalH1: item.originalH1 ?? null,
+  errorMessage: item.error ?? null,
+  retryCount: item.attempts ?? 0,
+  attempts: item.attempts ?? 0,
+  createdAt: item.createdAt,
+  updatedAt: item.updatedAt,
+});
+
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 
@@ -173,9 +189,27 @@ app.get('/api/jobs/:id', async (req: Request, res: Response, next: NextFunction)
 
     const urls = await jobUrlRepo.findByJobId(job.id);
     res.json({
-      job,
+      ...job,
       urls,
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET /api/jobs/:id/results - Job results array for UI polling
+app.get('/api/jobs/:id/results', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { jobRepo, jobUrlRepo } = getUseCases();
+    const id = String(req.params.id);
+    const job = await jobRepo.findById(id);
+    if (!job) {
+      res.status(404).json({ error: 'Job not found' });
+      return;
+    }
+
+    const urls = await jobUrlRepo.findByJobId(job.id);
+    res.json(urls.map(mapJobUrlResult));
   } catch (error) {
     next(error);
   }

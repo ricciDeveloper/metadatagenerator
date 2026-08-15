@@ -81,5 +81,10 @@ describe('API Routes Integration', () => {
     const getJobRes = await makeRequest('GET', `/api/jobs/${jobRes.body.job.id}`);
     expect(getJobRes.status).toBe(200);
     expect(getJobRes.body.urls).toHaveLength(2);
+
+    const resultsRes = await makeRequest('GET', `/api/jobs/${jobRes.body.job.id}/results`);
+    expect(resultsRes.status).toBe(200);
+    expect(Array.isArray(resultsRes.body)).toBe(true);
+    expect(resultsRes.body).toHaveLength(2);
   });
 });
