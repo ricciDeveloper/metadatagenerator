@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FolderKanban, Plus, Settings, Trash2, ExternalLink, Tag, ArrowRight } from 'lucide-react';
+import { FolderKanban, Plus, Settings, Trash2, ExternalLink, ArrowRight } from 'lucide-react';
 
 interface ProjectsListProps {
   setCurrentTab: (tab: string) => void;
