@@ -22,7 +22,20 @@ Automação em Node.js que realiza scraping de páginas web e utiliza a API do *
 
 -   **Rate Limit & Sanitização**: Inclui intervalo configurável entre requisições para evitar bloqueios de API.
 
-🛠️ Pré-requisitos
+�️ Banco de dados: Supabase
+---------------------------
+
+Este projeto usa PostgreSQL via Drizzle. Para rodar no Supabase e também no Vercel, configure a variável de ambiente:
+
+- `DATABASE_URL` com a string de conexão do PostgreSQL do Supabase, por exemplo:
+
+```bash
+DATABASE_URL="postgresql://postgres:[PASSWORD]@db.[project-ref].supabase.co:5432/postgres?sslmode=require"
+```
+
+No Vercel, adicione essa variável em "Settings > Environment Variables". Como o projeto usa Drizzle + Postgres, o Supabase funciona nativamente como banco principal.
+
+�🛠️ Pré-requisitos
 ------------------
 
 -   **Node.js** (versão 18 ou superior recomendada)
