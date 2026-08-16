@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Key, Link as LinkIcon, FileText, Plus, Trash2, ShieldCheck,
-  Play, AlertCircle, Info, Cpu, ChevronDown, ChevronUp
+  Key, FileText, Plus, Trash2, ShieldCheck,
+  Play, AlertCircle, Info, ChevronDown, ChevronUp
 } from 'lucide-react';
 
 interface NewJobProps {
