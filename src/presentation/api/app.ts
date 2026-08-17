@@ -35,7 +35,7 @@ app.get('/api/health', (_req: Request, res: Response) => {
 });
 
 // DB healthcheck - quick connectivity test
-app.get('/api/health/db', async (_req: Request, res: Response, next: NextFunction) => {
+app.get('/api/health/db', async (_req: Request, res: Response) => {
   try {
     const db = getDb();
     // simple raw query to validate connection
