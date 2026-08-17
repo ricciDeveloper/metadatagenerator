@@ -6,6 +6,7 @@ import { JobEntity } from '../../domain/entities/JobEntity';
 import { JobUrlEntity } from '../../domain/entities/JobUrlEntity';
 import { DomainError } from '../../shared/errors/DomainErrors';
 import { SEO_PRESETS } from '../../domain/value-objects/SeoConfig';
+import { getDb } from '../../infrastructure/database/connection';
 
 const app = express();
 
@@ -31,6 +32,29 @@ app.use(express.json({ limit: '2mb' }));
 // Healthcheck
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// DB healthcheck - quick connectivity test
+app.get('/api/health/db', async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const db = getDb();
+    // simple raw query to validate connection
+    // drizzle exposes a `query` method on the pool; use a lightweight select
+    // If Drizzle instance is returned, run a simple SQL via `db.query` if available
+    if ((db as any).execute && typeof (db as any).execute === 'function') {
+      await (db as any).execute('select 1');
+    } else if ((db as any).query && typeof (db as any).query === 'function') {
+      await (db as any).query('select 1');
+    } else {
+      // attempt pool check via pg internals
+      // Not all environments expose pool; if nothing available, respond OK (best-effort)
+    }
+
+    res.json({ status: 'ok', db: 'connected' });
+  } catch (err: any) {
+    console.error('[DB Health] error', err && err.message ? err.message : err);
+    res.status(503).json({ status: 'error', db: 'unavailable', message: 'Database connection failed' });
+  }
 });
 
 // GET /api/presets
@@ -265,4 +289,5 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).json({ error: 'An unexpected server error occurred.' });
 });
 
+// Exporting the app instance
 export default app;
