@@ -1,3 +1,3 @@
-import app from '../src/presentation/api/app';
+import app from '../src/presentation/api/app.ts';
 
 export default app;

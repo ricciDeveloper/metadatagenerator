@@ -1,12 +1,12 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import { getUseCases } from './container';
-import { ProjectEntity } from '../../domain/entities/ProjectEntity';
-import { JobEntity } from '../../domain/entities/JobEntity';
-import { JobUrlEntity } from '../../domain/entities/JobUrlEntity';
-import { DomainError } from '../../shared/errors/DomainErrors';
-import { SEO_PRESETS } from '../../domain/value-objects/SeoConfig';
-import { getDb } from '../../infrastructure/database/connection';
+import { getUseCases } from './container.ts';
+import { ProjectEntity } from '../../domain/entities/ProjectEntity.ts';
+import { JobEntity } from '../../domain/entities/JobEntity.ts';
+import { JobUrlEntity } from '../../domain/entities/JobUrlEntity.ts';
+import { DomainError } from '../../shared/errors/DomainErrors.ts';
+import { SEO_PRESETS } from '../../domain/value-objects/SeoConfig.ts';
+import { getDb } from '../../infrastructure/database/connection.ts';
 
 const app = express();
 

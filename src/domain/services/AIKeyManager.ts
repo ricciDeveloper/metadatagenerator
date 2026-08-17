@@ -1,4 +1,4 @@
-import { AllApiKeysUnavailableError } from '../../shared/errors/DomainErrors';
+import { AllApiKeysUnavailableError } from '../../shared/errors/DomainErrors.ts';
 
 export type KeyState = 'active' | 'cooldown' | 'disabled';
 

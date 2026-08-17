@@ -1,12 +1,12 @@
 import { eq, desc } from 'drizzle-orm';
-import { getDb } from '../database/connection';
-import { projects, jobs, jobUrls } from '../database/schema';
-import { ProjectEntity } from '../../domain/entities/ProjectEntity';
-import { JobEntity } from '../../domain/entities/JobEntity';
-import { JobUrlEntity } from '../../domain/entities/JobUrlEntity';
-import { ProjectRepository } from '../../domain/repositories/ProjectRepository';
-import { JobRepository } from '../../domain/repositories/JobRepository';
-import { JobUrlRepository } from '../../domain/repositories/JobUrlRepository';
+import { getDb } from '../database/connection.ts';
+import { projects, jobs, jobUrls } from '../database/schema.ts';
+import { ProjectEntity } from '../../domain/entities/ProjectEntity.ts';
+import { JobEntity } from '../../domain/entities/JobEntity.ts';
+import { JobUrlEntity } from '../../domain/entities/JobUrlEntity.ts';
+import { ProjectRepository } from '../../domain/repositories/ProjectRepository.ts';
+import { JobRepository } from '../../domain/repositories/JobRepository.ts';
+import { JobUrlRepository } from '../../domain/repositories/JobUrlRepository.ts';
 
 export class DrizzleProjectRepository implements ProjectRepository {
   async save(project: ProjectEntity): Promise<void> {

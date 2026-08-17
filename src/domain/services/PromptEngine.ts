@@ -1,4 +1,4 @@
-import { SeoConfig } from '../value-objects/SeoConfig';
+import { SeoConfig } from '../value-objects/SeoConfig.ts';
 
 export interface PageContent {
   url: string;

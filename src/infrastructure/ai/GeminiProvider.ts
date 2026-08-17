@@ -1,6 +1,6 @@
 import { GoogleGenAI, Type } from '@google/genai';
-import { AIProvider, AIProviderOptions } from '../../domain/providers/AIProvider';
-import { GeneratedMetadata } from '../../domain/services/MetadataValidator';
+import { AIProvider, AIProviderOptions } from '../../domain/providers/AIProvider.ts';
+import { GeneratedMetadata } from '../../domain/services/MetadataValidator.ts';
 
 export class GeminiProvider implements AIProvider {
   async generateMetadata(prompt: string, options: AIProviderOptions): Promise<GeneratedMetadata> {

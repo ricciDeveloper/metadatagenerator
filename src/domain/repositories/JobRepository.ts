@@ -1,4 +1,4 @@
-import { JobEntity } from '../entities/JobEntity';
+import { JobEntity } from '../entities/JobEntity.ts';
 
 export interface JobRepository {
   save(job: JobEntity): Promise<void>;

@@ -1,4 +1,4 @@
-import { SeoConfig, DEFAULT_SEO_CONFIG, SEO_PRESETS } from '../value-objects/SeoConfig';
+import { SeoConfig, DEFAULT_SEO_CONFIG, SEO_PRESETS } from '../value-objects/SeoConfig.ts';
 
 export interface ProjectProps {
   id?: string;

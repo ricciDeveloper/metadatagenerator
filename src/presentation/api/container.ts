@@ -1,15 +1,15 @@
-import { ProjectRepository } from '../../domain/repositories/ProjectRepository';
-import { JobRepository } from '../../domain/repositories/JobRepository';
-import { JobUrlRepository } from '../../domain/repositories/JobUrlRepository';
-import { InMemoryProjectRepository, InMemoryJobRepository, InMemoryJobUrlRepository } from '../../infrastructure/repositories/InMemoryRepositories';
-import { DrizzleProjectRepository, DrizzleJobRepository, DrizzleJobUrlRepository } from '../../infrastructure/repositories/DrizzleRepositories';
-import { AxiosCheerioPageScraper } from '../../infrastructure/scraper/AxiosCheerioPageScraper';
-import { GeminiProvider } from '../../infrastructure/ai/GeminiProvider';
-import { PromptEngine } from '../../domain/services/PromptEngine';
-import { MetadataValidator } from '../../domain/services/MetadataValidator';
-import { ProcessUrlMetadataUseCase } from '../../application/use-cases/ProcessUrlMetadataUseCase';
-import { ProcessJobBatchUseCase } from '../../application/use-cases/ProcessJobBatchUseCase';
-import { ExportJobCsvUseCase } from '../../application/use-cases/ExportJobCsvUseCase';
+import { ProjectRepository } from '../../domain/repositories/ProjectRepository.ts';
+import { JobRepository } from '../../domain/repositories/JobRepository.ts';
+import { JobUrlRepository } from '../../domain/repositories/JobUrlRepository.ts';
+import { InMemoryProjectRepository, InMemoryJobRepository, InMemoryJobUrlRepository } from '../../infrastructure/repositories/InMemoryRepositories.ts';
+import { DrizzleProjectRepository, DrizzleJobRepository, DrizzleJobUrlRepository } from '../../infrastructure/repositories/DrizzleRepositories.ts';
+import { AxiosCheerioPageScraper } from '../../infrastructure/scraper/AxiosCheerioPageScraper.ts';
+import { GeminiProvider } from '../../infrastructure/ai/GeminiProvider.ts';
+import { PromptEngine } from '../../domain/services/PromptEngine.ts';
+import { MetadataValidator } from '../../domain/services/MetadataValidator.ts';
+import { ProcessUrlMetadataUseCase } from '../../application/use-cases/ProcessUrlMetadataUseCase.ts';
+import { ProcessJobBatchUseCase } from '../../application/use-cases/ProcessJobBatchUseCase.ts';
+import { ExportJobCsvUseCase } from '../../application/use-cases/ExportJobCsvUseCase.ts';
 
 // Singletons / Instances
 let projectRepo: ProjectRepository;

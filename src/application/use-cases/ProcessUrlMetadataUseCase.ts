@@ -1,8 +1,8 @@
-import { PageScraper } from '../../domain/providers/PageScraper';
-import { AIProvider } from '../../domain/providers/AIProvider';
-import { PromptEngine, PageContent } from '../../domain/services/PromptEngine';
-import { MetadataValidator } from '../../domain/services/MetadataValidator';
-import { SeoConfig } from '../../domain/value-objects/SeoConfig';
+import { PageScraper } from '../../domain/providers/PageScraper.ts';
+import { AIProvider } from '../../domain/providers/AIProvider.ts';
+import { PromptEngine, PageContent } from '../../domain/services/PromptEngine.ts';
+import { MetadataValidator } from '../../domain/services/MetadataValidator.ts';
+import { SeoConfig } from '../../domain/value-objects/SeoConfig.ts';
 
 export interface ProcessUrlRequest {
   url: string;

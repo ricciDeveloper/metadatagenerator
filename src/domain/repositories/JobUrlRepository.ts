@@ -1,4 +1,4 @@
-import { JobUrlEntity } from '../entities/JobUrlEntity';
+import { JobUrlEntity } from '../entities/JobUrlEntity.ts';
 
 export interface JobUrlRepository {
   saveBatch(urls: JobUrlEntity[]): Promise<void>;

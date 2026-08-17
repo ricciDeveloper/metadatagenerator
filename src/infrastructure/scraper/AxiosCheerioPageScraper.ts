@@ -1,8 +1,8 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { PageScraper } from '../../domain/providers/PageScraper';
-import { PageContent } from '../../domain/services/PromptEngine';
-import { SSRFGuard } from '../../domain/services/SSRFGuard';
+import { PageScraper } from '../../domain/providers/PageScraper.ts';
+import { PageContent } from '../../domain/services/PromptEngine.ts';
+import { SSRFGuard } from '../../domain/services/SSRFGuard.ts';
 
 export class AxiosCheerioPageScraper implements PageScraper {
   private ssrfGuard: SSRFGuard;

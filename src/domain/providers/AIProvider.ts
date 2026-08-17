@@ -1,4 +1,4 @@
-import { GeneratedMetadata } from '../services/MetadataValidator';
+import { GeneratedMetadata } from '../services/MetadataValidator.ts';
 
 export interface AIProviderOptions {
   model?: string;

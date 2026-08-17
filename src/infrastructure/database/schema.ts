@@ -1,5 +1,5 @@
 import { pgTable, text, integer, timestamp, jsonb } from 'drizzle-orm/pg-core';
-import { SeoConfig } from '../../domain/value-objects/SeoConfig';
+import { SeoConfig } from '../../domain/value-objects/SeoConfig.ts';
 
 export const projects = pgTable('projects', {
   id: text('id').primaryKey(),

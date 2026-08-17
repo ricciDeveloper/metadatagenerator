@@ -1,4 +1,4 @@
-import { JobLimitExceededError } from '../../shared/errors/DomainErrors';
+import { JobLimitExceededError } from '../../shared/errors/DomainErrors.ts';
 
 export type JobStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
 

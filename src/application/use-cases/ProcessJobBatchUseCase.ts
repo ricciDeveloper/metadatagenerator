@@ -1,9 +1,9 @@
-import { ProjectRepository } from '../../domain/repositories/ProjectRepository';
-import { JobRepository } from '../../domain/repositories/JobRepository';
-import { JobUrlRepository } from '../../domain/repositories/JobUrlRepository';
-import { ProcessUrlMetadataUseCase, ProcessUrlResponse } from './ProcessUrlMetadataUseCase';
-import { AIKeyManager } from '../../domain/services/AIKeyManager';
-import { JobNotFoundError, ProjectNotFoundError } from '../../shared/errors/DomainErrors';
+import { ProjectRepository } from '../../domain/repositories/ProjectRepository.ts';
+import { JobRepository } from '../../domain/repositories/JobRepository.ts';
+import { JobUrlRepository } from '../../domain/repositories/JobUrlRepository.ts';
+import { ProcessUrlMetadataUseCase, ProcessUrlResponse } from './ProcessUrlMetadataUseCase.ts';
+import { AIKeyManager } from '../../domain/services/AIKeyManager.ts';
+import { JobNotFoundError, ProjectNotFoundError } from '../../shared/errors/DomainErrors.ts';
 
 export interface ProcessJobBatchRequest {
   jobId: string;

@@ -1,9 +1,9 @@
-import { ProjectEntity } from '../../domain/entities/ProjectEntity';
-import { JobEntity } from '../../domain/entities/JobEntity';
-import { JobUrlEntity } from '../../domain/entities/JobUrlEntity';
-import { ProjectRepository } from '../../domain/repositories/ProjectRepository';
-import { JobRepository } from '../../domain/repositories/JobRepository';
-import { JobUrlRepository } from '../../domain/repositories/JobUrlRepository';
+import { ProjectEntity } from '../../domain/entities/ProjectEntity.ts';
+import { JobEntity } from '../../domain/entities/JobEntity.ts';
+import { JobUrlEntity } from '../../domain/entities/JobUrlEntity.ts';
+import { ProjectRepository } from '../../domain/repositories/ProjectRepository.ts';
+import { JobRepository } from '../../domain/repositories/JobRepository.ts';
+import { JobUrlRepository } from '../../domain/repositories/JobUrlRepository.ts';
 
 export class InMemoryProjectRepository implements ProjectRepository {
   private projectsMap = new Map<string, ProjectEntity>();

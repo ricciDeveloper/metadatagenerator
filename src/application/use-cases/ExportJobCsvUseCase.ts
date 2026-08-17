@@ -1,4 +1,4 @@
-import { JobUrlRepository } from '../../domain/repositories/JobUrlRepository';
+import { JobUrlRepository } from '../../domain/repositories/JobUrlRepository.ts';
 
 export class ExportJobCsvUseCase {
   constructor(private jobUrlRepository: JobUrlRepository) {}

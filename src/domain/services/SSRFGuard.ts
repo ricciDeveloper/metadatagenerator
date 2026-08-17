@@ -1,5 +1,5 @@
 import ipaddr from 'ipaddr.js';
-import { SSRFError, InvalidUrlError } from '../../shared/errors/DomainErrors';
+import { SSRFError, InvalidUrlError } from '../../shared/errors/DomainErrors.ts';
 
 export class SSRFGuard {
   validateUrl(urlInput: string): string {

@@ -1,4 +1,4 @@
-import { ProjectEntity } from '../entities/ProjectEntity';
+import { ProjectEntity } from '../entities/ProjectEntity.ts';
 
 export interface ProjectRepository {
   save(project: ProjectEntity): Promise<void>;
