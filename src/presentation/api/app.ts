@@ -14,6 +14,14 @@ app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// GET /api/config
+app.get('/api/config', (_req: Request, res: Response) => {
+  res.json({
+    hasServerKey: Boolean(process.env.GEMINI_API_KEY),
+    defaultModel: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+  });
+});
+
 // GET /api/presets
 app.get('/api/presets', (_req: Request, res: Response) => {
   res.json(SEO_PRESETS);
@@ -23,15 +31,26 @@ app.get('/api/presets', (_req: Request, res: Response) => {
 app.post('/api/process', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { urls, apiKeys, concurrency, model, customPrompt, seoConfig } = req.body;
-    if (!Array.isArray(urls) || urls.length === 0 || !Array.isArray(apiKeys) || apiKeys.length === 0) {
-      res.status(400).json({ error: 'At least one Gemini API key is required in apiKeys array.' });
+    const providedKeys = Array.isArray(apiKeys)
+      ? apiKeys.filter((k: any) => typeof k === 'string' && k.trim().length > 0)
+      : [];
+    const serverKey = process.env.GEMINI_API_KEY ? [process.env.GEMINI_API_KEY] : [];
+    const effectiveKeys = providedKeys.length > 0 ? providedKeys : serverKey;
+
+    if (!Array.isArray(urls) || urls.length === 0) {
+      res.status(400).json({ error: 'Pelo menos uma URL é obrigatória.' });
+      return;
+    }
+
+    if (effectiveKeys.length === 0) {
+      res.status(400).json({ error: 'Nenhuma chave de API Gemini foi fornecida ou configurada no servidor.' });
       return;
     }
 
     const { processUrlsUseCase } = getUseCases();
     const result = await processUrlsUseCase.execute({
       urls,
-      apiKeys,
+      apiKeys: effectiveKeys,
       concurrency: concurrency ? Number(concurrency) : undefined,
       model,
       customPrompt,

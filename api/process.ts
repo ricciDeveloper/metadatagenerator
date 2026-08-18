@@ -20,14 +20,25 @@ export default async function handler(req: any, res: any) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
     const { urls, apiKeys, concurrency, model, customPrompt, seoConfig } = body;
 
-    if (!Array.isArray(urls) || urls.length === 0 || !Array.isArray(apiKeys) || apiKeys.length === 0) {
-      res.status(400).json({ error: 'At least one URL and one Gemini API key are required.' });
+    const providedKeys = Array.isArray(apiKeys)
+      ? apiKeys.filter((k: any) => typeof k === 'string' && k.trim().length > 0)
+      : [];
+    const serverKey = process.env.GEMINI_API_KEY ? [process.env.GEMINI_API_KEY] : [];
+    const effectiveKeys = providedKeys.length > 0 ? providedKeys : serverKey;
+
+    if (!Array.isArray(urls) || urls.length === 0) {
+      res.status(400).json({ error: 'At least one URL is required.' });
+      return;
+    }
+
+    if (effectiveKeys.length === 0) {
+      res.status(400).json({ error: 'No Gemini API key provided or configured on server.' });
       return;
     }
 
     const result = await getUseCases().processUrlsUseCase.execute({
       urls,
-      apiKeys,
+      apiKeys: effectiveKeys,
       concurrency: concurrency ? Number(concurrency) : undefined,
       model,
       customPrompt,

@@ -1,0 +1,6 @@
+{
+  "name": "SEO Metadata Generator",
+  "description": "AI-powered SEO metadata generator analyzing web pages and generating optimized meta titles and descriptions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

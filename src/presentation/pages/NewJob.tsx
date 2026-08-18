@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { AlertCircle, Download, FileText, Key, Play, Plus, ShieldCheck, Trash2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { AlertCircle, Download, FileText, Key, Play, Plus, ShieldCheck, Sparkles, Trash2 } from 'lucide-react';
 
 const DEFAULT_PROMPT = `Você é um especialista em SEO internacional e copywriting técnico.
 
@@ -23,13 +23,28 @@ interface Result {
 
 export const NewJob: React.FC = () => {
   const [apiKeys, setApiKeys] = useState<string[]>(['']);
-  const [model, setModel] = useState('gemini-3.1-flash-lite');
+  const [hasServerKey, setHasServerKey] = useState(false);
+  const [model, setModel] = useState('gemini-2.5-flash');
   const [prompt, setPrompt] = useState(DEFAULT_PROMPT);
   const [urlInput, setUrlInput] = useState('');
   const [concurrency, setConcurrency] = useState(3);
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetch('/api/config')
+      .then(res => res.json())
+      .then(data => {
+        if (data?.hasServerKey) {
+          setHasServerKey(true);
+        }
+        if (data?.defaultModel) {
+          setModel(data.defaultModel);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const urls = Array.from(new Set(urlInput.split(/\r?\n/).map(url => url.trim()).filter(Boolean)));
   const overLimit = urls.length > 200;
@@ -49,7 +64,9 @@ export const NewJob: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const validKeys = apiKeys.map(key => key.trim()).filter(Boolean);
-    if (!validKeys.length) return setError('Insira pelo menos uma Gemini API Key.');
+    if (!validKeys.length && !hasServerKey) {
+      return setError('Insira pelo menos uma Gemini API Key ou configure no ambiente.');
+    }
     if (!urls.length) return setError('Insira pelo menos uma URL.');
     if (overLimit) return setError('O limite é de 200 URLs por execução.');
 
@@ -103,21 +120,57 @@ export const NewJob: React.FC = () => {
     <div className="fade-in" style={{ maxWidth: 900, margin: '0 auto' }}>
       <div style={{ marginBottom: 28 }}>
         <h1 className="section-title">Novo Job de SEO</h1>
-        <p className="section-subtitle">Gere metadados diretamente nesta sessão. Nada é salvo em banco ou no servidor.</p>
+        <p className="section-subtitle">Gere metadados diretamente nesta sessão. Processamento rápido com IA.</p>
       </div>
       {error && <div className="alert alert-error" style={{ marginBottom: 20 }}><AlertCircle size={16} /><span>{error}</span></div>}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="card p-6">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <div><h2 className="section-title" style={{ fontSize: 16 }}>Chaves da API Gemini</h2><p className="section-subtitle" style={{ fontSize: 12.5 }}>As chaves são alternadas automaticamente quando uma atinge o limite.</p></div>
+            <div>
+              <h2 className="section-title" style={{ fontSize: 16 }}>Chaves da API Gemini</h2>
+              <p className="section-subtitle" style={{ fontSize: 12.5 }}>
+                {hasServerKey
+                  ? 'Chave de ambiente do servidor detectada. Você também pode informar chaves adicionais para rotação.'
+                  : 'As chaves são alternadas automaticamente quando uma atinge o limite.'}
+              </p>
+            </div>
             <button type="button" className="btn btn-ghost btn-sm" onClick={addKey}><Plus size={14} />Adicionar</button>
           </div>
-          <div style={{ display: 'grid', gap: 10 }}>{apiKeys.map((key, index) => <div key={index} style={{ display: 'flex', gap: 8 }}><div style={{ position: 'relative', flex: 1 }}><Key size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} /><input className="form-input font-mono" style={{ paddingLeft: 36 }} type="password" value={key} onChange={event => updateKey(index, event.target.value)} placeholder={`Gemini API Key #${index + 1}`} autoComplete="off" /></div>{apiKeys.length > 1 && <button type="button" className="icon-btn btn-danger" title="Remover chave" onClick={() => removeKey(index)}><Trash2 size={14} /></button>}</div>)}</div>
-          <div className="alert alert-info" style={{ marginTop: 14 }}><ShieldCheck size={15} /><span style={{ fontSize: 12.5 }}>As chaves ficam apenas na memória desta sessão.</span></div>
+          <div style={{ display: 'grid', gap: 10 }}>
+            {apiKeys.map((key, index) => (
+              <div key={index} style={{ display: 'flex', gap: 8 }}>
+                <div style={{ position: 'relative', flex: 1 }}>
+                  <Key size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  <input
+                    className="form-input font-mono"
+                    style={{ paddingLeft: 36 }}
+                    type="password"
+                    value={key}
+                    onChange={event => updateKey(index, event.target.value)}
+                    placeholder={hasServerKey && index === 0 ? 'Usar GEMINI_API_KEY padrão do ambiente ou digitar outra...' : `Gemini API Key #${index + 1}`}
+                    autoComplete="off"
+                  />
+                </div>
+                {apiKeys.length > 1 && (
+                  <button type="button" className="icon-btn btn-danger" title="Remover chave" onClick={() => removeKey(index)}>
+                    <Trash2 size={14} />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="alert alert-info" style={{ marginTop: 14 }}>
+            {hasServerKey ? <Sparkles size={15} /> : <ShieldCheck size={15} />}
+            <span style={{ fontSize: 12.5 }}>
+              {hasServerKey
+                ? 'Ambiente configurado com GEMINI_API_KEY ativa no servidor.'
+                : 'As chaves inseridas ficam apenas na memória desta sessão.'}
+            </span>
+          </div>
         </div>
         <div className="card p-6">
           <h2 className="section-title" style={{ fontSize: 16, marginBottom: 4 }}>Modelo e prompt</h2><p className="section-subtitle" style={{ fontSize: 12.5, marginBottom: 16 }}>O prompt abaixo já está pronto e pode ser ajustado antes da execução.</p>
-          <div className="form-group" style={{ marginBottom: 16 }}><label className="form-label">Modelo Gemini</label><input className="form-input font-mono" value={model} onChange={event => setModel(event.target.value)} placeholder="gemini-3.1-flash-lite" /></div>
+          <div className="form-group" style={{ marginBottom: 16 }}><label className="form-label">Modelo Gemini</label><input className="form-input font-mono" value={model} onChange={event => setModel(event.target.value)} placeholder="gemini-2.5-flash" /></div>
           <div className="form-group"><label className="form-label">Prompt de geração</label><textarea className="form-textarea font-mono" rows={11} value={prompt} onChange={event => setPrompt(event.target.value)} /></div>
         </div>
         <div className="card p-6">
