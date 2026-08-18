@@ -29,30 +29,28 @@ export class ProcessUrlsUseCase {
     const queue = [...urls];
 
     const processUrl = async (url: string) => {
-      let activeKey: string;
-      try {
-        activeKey = keyManager.getActiveKey();
-      } catch (error: any) {
-        return { url, success: false, attempts: 0, error: error.message || 'Todas as API keys estão indisponíveis.' };
-      }
+      let lastError = 'Todas as API keys estão indisponíveis.';
+      while (true) {
+        let activeKey: string;
+        try {
+          activeKey = keyManager.getActiveKey();
+        } catch (error: any) {
+          return { url, success: false, attempts: 0, error: error.message || lastError };
+        }
 
-      try {
-        const result = await this.processUrlMetadataUseCase.execute({
-          url,
-          apiKey: activeKey,
-          model: request.model,
-          customPrompt: request.customPrompt,
-          seoConfig: request.seoConfig || DEFAULT_SEO_CONFIG,
-        });
-        return result;
-      } catch (error: any) {
-        keyManager.recordError(activeKey, error.status || error.statusCode || 500);
-        return {
-          url,
-          success: false,
-          attempts: 1,
-          error: `Gemini Provider Error: ${error.message || 'Erro desconhecido'}`,
-        };
+        try {
+          return await this.processUrlMetadataUseCase.execute({
+            url,
+            apiKey: activeKey,
+            model: request.model,
+            customPrompt: request.customPrompt,
+            seoConfig: request.seoConfig || DEFAULT_SEO_CONFIG,
+          });
+        } catch (error: any) {
+          const status = error.status || error.statusCode || 500;
+          lastError = `Gemini Provider Error: ${error.message || 'Erro desconhecido'}`;
+          keyManager.recordError(activeKey, status);
+        }
       }
     };
 

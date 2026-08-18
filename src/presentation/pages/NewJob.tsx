@@ -57,14 +57,29 @@ export const NewJob: React.FC = () => {
     setError('');
     setResults([]);
     try {
-      const response = await fetch('/api/process', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ urls, apiKeys: validKeys, model, customPrompt: prompt, concurrency }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Falha ao processar o job.');
-      setResults(data.results || []);
+      const queue = [...urls];
+      const completedResults: Result[] = [];
+      const worker = async () => {
+        while (queue.length > 0) {
+          const url = queue.shift();
+          if (!url) continue;
+          try {
+            const response = await fetch('/api/process', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ urls: [url], apiKeys: validKeys, model, customPrompt: prompt }),
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Falha ao processar a URL.');
+            completedResults.push(...(data.results || []));
+            setResults([...completedResults]);
+          } catch (requestError: any) {
+            completedResults.push({ url, success: false, error: requestError.message || 'Falha ao processar a URL.' });
+            setResults([...completedResults]);
+          }
+        }
+      };
+      await Promise.all(Array.from({ length: Math.min(concurrency, urls.length) }, worker));
     } catch (requestError: any) {
       setError(requestError.message || 'Falha ao processar o job.');
     } finally {
