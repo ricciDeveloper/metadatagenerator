@@ -8,7 +8,7 @@ export interface PageContent {
 }
 
 export class PromptEngine {
-  buildPrompt(content: PageContent, config: SeoConfig): string {
+  buildPrompt(content: PageContent, config: SeoConfig, customPrompt?: string): string {
     const avoidH1Instruction = config.avoidH1
       ? `- O Meta Title NÃO DEVE ser igual ou idêntico ao H1 ("${content.h1}").`
       : '';
@@ -21,7 +21,7 @@ export class PromptEngine {
       ? `- Adicione o sufixo "${config.titleSuffix}" ao final do Title se couber no limite de caracteres.`
       : '';
 
-    return `
+    const basePrompt = `
 Você é um especialista em SEO internacional e copywriting técnico.
 
 Analise as informações da página e gere os metadados de SEO otimizados seguindo RIGOROSAMENTE as regras abaixo:
@@ -54,5 +54,18 @@ H1: ${content.h1 || 'Não informado'}
 Conteúdo principal:
 ${content.bodyText ? content.bodyText.substring(0, 4000) : 'Sem conteúdo legível'}
 `;
+
+    if (!customPrompt?.trim()) return basePrompt;
+
+    return `${customPrompt.trim()}
+
+Dados da página para análise:
+URL: ${content.url}
+Title atual: ${content.title || 'Não informado'}
+H1: ${content.h1 || 'Não informado'}
+Conteúdo principal:
+${content.bodyText ? content.bodyText.substring(0, 4000) : 'Sem conteúdo legível'}
+
+Retorne APENAS um objeto JSON no formato {"title":"...","description":"..."}.`;
   }
 }

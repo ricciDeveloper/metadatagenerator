@@ -23,20 +23,3 @@ export class SSRFError extends DomainError {
   }
 }
 
-export class ProjectNotFoundError extends DomainError {
-  constructor(id: string) {
-    super(`Project with ID "${id}" was not found.`);
-  }
-}
-
-export class JobNotFoundError extends DomainError {
-  constructor(id: string) {
-    super(`Job with ID "${id}" was not found.`);
-  }
-}
-
-export class JobLimitExceededError extends DomainError {
-  constructor(limit = 200) {
-    super(`Job exceeds the maximum allowed limit of ${limit} URLs.`);
-  }
-}

@@ -9,6 +9,7 @@ export interface ProcessUrlRequest {
   apiKey: string;
   seoConfig: SeoConfig;
   model?: string;
+  customPrompt?: string;
   maxRetries?: number;
 }
 
@@ -54,7 +55,7 @@ export class ProcessUrlMetadataUseCase {
     while (attempts < maxRetries) {
       attempts++;
       try {
-        const prompt = this.promptEngine.buildPrompt(pageContent, request.seoConfig);
+        const prompt = this.promptEngine.buildPrompt(pageContent, request.seoConfig, request.customPrompt);
         const generated = await this.aiProvider.generateMetadata(prompt, {
           apiKey: request.apiKey,
           model: request.model,
