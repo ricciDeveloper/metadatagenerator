@@ -17,8 +17,8 @@ describe('PromptEngine', () => {
     const prompt = engine.buildPrompt(mockContent, config);
 
     expect(prompt).toContain('Português do Brasil');
-    expect(prompt).toContain('50 e 55 caracteres');
-    expect(prompt).toContain('150 e 155 caracteres');
+    expect(prompt).toContain('55 e 60 caracteres');
+    expect(prompt).toContain('140 e 160 caracteres');
     expect(prompt).toContain('NÃO DEVE ser igual ou idêntico ao H1');
     expect(prompt).toContain('NÃO utilizar emojis');
     expect(prompt).toContain('NÃO utilizar aspas');

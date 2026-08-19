@@ -87,9 +87,9 @@ export class ProcessUrlMetadataUseCase {
           };
         }
 
-        // If the metadata is otherwise valid but exceeds maximum allowed length, remember it
+        // If the metadata is otherwise valid but does not fulfill the exact character limits, remember it as a warning candidate
         const fatalErrors = validation.errors.filter(
-          err => !err.includes('exceeds maximum')
+          err => !err.includes('below minimum') && !err.includes('exceeds maximum')
         );
 
         if (generated?.title?.trim() && generated?.description?.trim() && fatalErrors.length === 0) {

@@ -37,11 +37,14 @@ export class MetadataValidator {
       errors.push('Title is empty or missing.');
     } else {
       if (title.length < config.title.minLength) {
-        errors.push(`Title length (${title.length}) is below minimum of ${config.title.minLength} characters.`);
+        const msg = `Title length (${title.length}) is below minimum of ${config.title.minLength} characters.`;
+        errors.push(msg);
+        warnings.push(msg);
       }
       if (title.length > config.title.maxLength) {
-        errors.push(`Title length (${title.length}) exceeds maximum of ${config.title.maxLength} characters.`);
-        warnings.push(`Title length (${title.length}) exceeds maximum of ${config.title.maxLength} characters.`);
+        const msg = `Title length (${title.length}) exceeds maximum of ${config.title.maxLength} characters.`;
+        errors.push(msg);
+        warnings.push(msg);
       }
     }
 
@@ -49,11 +52,14 @@ export class MetadataValidator {
       errors.push('Description is empty or missing.');
     } else {
       if (description.length < config.description.minLength) {
-        errors.push(`Description length (${description.length}) is below minimum of ${config.description.minLength} characters.`);
+        const msg = `Description length (${description.length}) is below minimum of ${config.description.minLength} characters.`;
+        errors.push(msg);
+        warnings.push(msg);
       }
       if (description.length > config.description.maxLength) {
-        errors.push(`Description length (${description.length}) exceeds maximum of ${config.description.maxLength} characters.`);
-        warnings.push(`Description length (${description.length}) exceeds maximum of ${config.description.maxLength} characters.`);
+        const msg = `Description length (${description.length}) exceeds maximum of ${config.description.maxLength} characters.`;
+        errors.push(msg);
+        warnings.push(msg);
       }
     }
 

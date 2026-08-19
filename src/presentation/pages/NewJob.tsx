@@ -5,8 +5,8 @@ const DEFAULT_PROMPT = `Você é um especialista em SEO internacional e copywrit
 
 Analise a página informada e gere um Meta Title e uma Meta Description relevantes, claros e persuasivos.
 - Escreva em Português do Brasil.
-- O Meta Title deve ter entre 50 e 60 caracteres.
-- A Meta Description deve ter entre 150 e 160 caracteres.
+- O Meta Title deve ter entre 55 e 60 caracteres.
+- A Meta Description deve ter entre 140 e 160 caracteres.
 - Não use emojis nem aspas.
 - Evite repetir o H1 exatamente.
 

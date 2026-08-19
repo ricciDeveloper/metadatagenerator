@@ -21,8 +21,8 @@ export interface SeoConfig {
 export const SEO_PRESETS: Record<string, SeoConfig> = {
   ecommerce: {
     presetName: 'ecommerce',
-    title: { minLength: 50, maxLength: 55 },
-    description: { minLength: 150, maxLength: 155 },
+    title: { minLength: 55, maxLength: 60 },
+    description: { minLength: 140, maxLength: 160 },
     language: 'pt-BR',
     avoidH1: true,
     useCta: true,
@@ -30,8 +30,8 @@ export const SEO_PRESETS: Record<string, SeoConfig> = {
   },
   institucional: {
     presetName: 'institucional',
-    title: { minLength: 50, maxLength: 55 },
-    description: { minLength: 150, maxLength: 155 },
+    title: { minLength: 55, maxLength: 60 },
+    description: { minLength: 140, maxLength: 160 },
     language: 'pt-BR',
     avoidH1: true,
     useCta: true,
@@ -39,8 +39,8 @@ export const SEO_PRESETS: Record<string, SeoConfig> = {
   },
   blog: {
     presetName: 'blog',
-    title: { minLength: 50, maxLength: 55 },
-    description: { minLength: 150, maxLength: 155 },
+    title: { minLength: 55, maxLength: 60 },
+    description: { minLength: 140, maxLength: 160 },
     language: 'pt-BR',
     avoidH1: true,
     useCta: false,
@@ -48,8 +48,8 @@ export const SEO_PRESETS: Record<string, SeoConfig> = {
   },
   landing_page: {
     presetName: 'landing_page',
-    title: { minLength: 50, maxLength: 55 },
-    description: { minLength: 150, maxLength: 155 },
+    title: { minLength: 55, maxLength: 60 },
+    description: { minLength: 140, maxLength: 160 },
     language: 'pt-BR',
     avoidH1: true,
     useCta: true,
@@ -57,8 +57,8 @@ export const SEO_PRESETS: Record<string, SeoConfig> = {
   },
   custom: {
     presetName: 'custom',
-    title: { minLength: 40, maxLength: 60 },
-    description: { minLength: 120, maxLength: 160 },
+    title: { minLength: 55, maxLength: 60 },
+    description: { minLength: 140, maxLength: 160 },
     language: 'pt-BR',
     avoidH1: false,
     useCta: false,
