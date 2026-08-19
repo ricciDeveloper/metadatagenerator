@@ -85,4 +85,47 @@ describe('ProcessUrlMetadataUseCase', () => {
     expect(result.success).toBe(false);
     expect(result.error).toContain('Exceeded maximum metadata generation retries');
   });
+
+  it('should maintain generated content with warning flag when title/description exceeds maxLength', async () => {
+    const longTitle = 'Title that is longer than allowed maximum length and exceeds standard limits';
+    const longDescription = 'C'.repeat(170); // Exceeds default max 160
+
+    const mockScraper = {
+      scrape: vi.fn().mockResolvedValue({
+        url: 'https://example.com/item',
+        title: 'Original Title',
+        h1: 'Original H1',
+        bodyText: 'Body text content'
+      })
+    };
+
+    const mockAiProvider = {
+      generateMetadata: vi.fn().mockResolvedValue({
+        title: longTitle,
+        description: longDescription
+      })
+    };
+
+    const useCase = new ProcessUrlMetadataUseCase(
+      mockScraper,
+      mockAiProvider,
+      promptEngine,
+      validator
+    );
+
+    const result = await useCase.execute({
+      url: 'https://example.com/item',
+      apiKey: 'test-key',
+      seoConfig: DEFAULT_SEO_CONFIG,
+      maxRetries: 2
+    });
+
+    // Should NOT break the user flow, preserving generated title and description
+    expect(result.success).toBe(true);
+    expect(result.title).toBe(longTitle);
+    expect(result.description).toBe(longDescription);
+    expect(result.hasWarning).toBe(true);
+    expect(result.warning).toBeDefined();
+    expect(result.warning).toContain('exceeds maximum');
+  });
 });

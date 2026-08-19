@@ -23,6 +23,9 @@ export interface ProcessUrlResponse {
   description?: string;
   descriptionLength?: number;
   attempts: number;
+  hasWarning?: boolean;
+  warning?: string;
+  warnings?: string[];
   error?: string;
 }
 
@@ -51,6 +54,12 @@ export class ProcessUrlMetadataUseCase {
 
     let attempts = 0;
     let lastErrors: string[] = [];
+    let lastGenerated: {
+      title: string;
+      description: string;
+      validationErrors: string[];
+      validationWarnings: string[];
+    } | null = null;
 
     while (attempts < maxRetries) {
       attempts++;
@@ -74,6 +83,21 @@ export class ProcessUrlMetadataUseCase {
             description: generated.description,
             descriptionLength: generated.description.length,
             attempts,
+            hasWarning: false,
+          };
+        }
+
+        // If the metadata is otherwise valid but exceeds maximum allowed length, remember it
+        const fatalErrors = validation.errors.filter(
+          err => !err.includes('exceeds maximum')
+        );
+
+        if (generated?.title?.trim() && generated?.description?.trim() && fatalErrors.length === 0) {
+          lastGenerated = {
+            title: generated.title.trim(),
+            description: generated.description.trim(),
+            validationErrors: validation.errors,
+            validationWarnings: validation.warnings,
           };
         }
 
@@ -85,6 +109,28 @@ export class ProcessUrlMetadataUseCase {
           throw error;
         }
       }
+    }
+
+    // If metadata was generated but exceeded length or constraints after retries, keep content with warning flag
+    if (lastGenerated && lastGenerated.title && lastGenerated.description) {
+      const warningList = lastGenerated.validationWarnings.length > 0
+        ? lastGenerated.validationWarnings
+        : lastGenerated.validationErrors;
+
+      return {
+        url: request.url,
+        success: true,
+        originalTitle: pageContent.title,
+        originalH1: pageContent.h1,
+        title: lastGenerated.title,
+        titleLength: lastGenerated.title.length,
+        description: lastGenerated.description,
+        descriptionLength: lastGenerated.description.length,
+        attempts,
+        hasWarning: true,
+        warning: warningList.join('; '),
+        warnings: warningList,
+      };
     }
 
     return {

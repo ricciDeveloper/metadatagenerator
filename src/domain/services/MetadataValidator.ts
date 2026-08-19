@@ -7,7 +7,9 @@ export interface GeneratedMetadata {
 
 export interface ValidationResult {
   isValid: boolean;
+  hasLengthWarning: boolean;
   errors: string[];
+  warnings: string[];
 }
 
 export class MetadataValidator {
@@ -17,9 +19,15 @@ export class MetadataValidator {
     originalH1?: string
   ): ValidationResult {
     const errors: string[] = [];
+    const warnings: string[] = [];
 
     if (!metadata) {
-      return { isValid: false, errors: ['Metadata object is null or undefined.'] };
+      return {
+        isValid: false,
+        hasLengthWarning: false,
+        errors: ['Metadata object is null or undefined.'],
+        warnings: [],
+      };
     }
 
     const title = metadata.title?.trim() || '';
@@ -33,6 +41,7 @@ export class MetadataValidator {
       }
       if (title.length > config.title.maxLength) {
         errors.push(`Title length (${title.length}) exceeds maximum of ${config.title.maxLength} characters.`);
+        warnings.push(`Title length (${title.length}) exceeds maximum of ${config.title.maxLength} characters.`);
       }
     }
 
@@ -44,6 +53,7 @@ export class MetadataValidator {
       }
       if (description.length > config.description.maxLength) {
         errors.push(`Description length (${description.length}) exceeds maximum of ${config.description.maxLength} characters.`);
+        warnings.push(`Description length (${description.length}) exceeds maximum of ${config.description.maxLength} characters.`);
       }
     }
 
@@ -53,7 +63,9 @@ export class MetadataValidator {
 
     return {
       isValid: errors.length === 0,
+      hasLengthWarning: warnings.length > 0,
       errors,
+      warnings,
     };
   }
 }

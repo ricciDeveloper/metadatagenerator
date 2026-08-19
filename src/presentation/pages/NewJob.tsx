@@ -17,7 +17,11 @@ interface Result {
   url: string;
   success: boolean;
   title?: string;
+  titleLength?: number;
   description?: string;
+  descriptionLength?: number;
+  hasWarning?: boolean;
+  warning?: string;
   error?: string;
 }
 
@@ -105,9 +109,23 @@ export const NewJob: React.FC = () => {
   };
 
   const downloadCsv = () => {
-    const header = 'URL,Status,Meta Title,Meta Description,Erro';
+    const header = 'URL,Status,Meta Title,Caracteres Title,Meta Description,Caracteres Description,Avisos,Erro';
     const escape = (value: unknown) => `"${String(value ?? '').replace(/"/g, '""')}"`;
-    const rows = results.map(result => [result.url, result.success ? 'Sucesso' : 'Falha', result.title, result.description, result.error].map(escape).join(','));
+    const rows = results.map(result => {
+      const statusLabel = result.success
+        ? (result.hasWarning || result.warning ? 'Aviso' : 'Sucesso')
+        : 'Falha';
+      return [
+        result.url,
+        statusLabel,
+        result.title,
+        result.title?.length || 0,
+        result.description,
+        result.description?.length || 0,
+        result.warning || '',
+        result.error || '',
+      ].map(escape).join(',');
+    });
     const blob = new Blob([`\uFEFF${[header, ...rows].join('\n')}`], { type: 'text/csv;charset=utf-8' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -180,7 +198,91 @@ export const NewJob: React.FC = () => {
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}><button type="submit" className="btn btn-primary btn-lg" disabled={loading || overLimit || !urls.length} style={{ minWidth: 230 }}>{loading ? <><div className="spinner" style={{ width: 16, height: 16 }} />Processando...</> : <><Play size={17} />Iniciar {urls.length} URLs</>}</button></div>
       </form>
-      {results.length > 0 && <div className="card" style={{ marginTop: 28, overflow: 'hidden' }}><div style={{ padding: '18px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-subtle)' }}><div><h2 className="section-title" style={{ fontSize: 16 }}>Resultados</h2><p className="section-subtitle" style={{ fontSize: 12.5 }}>{results.filter(result => result.success).length} sucessos de {results.length} URLs</p></div><button className="btn btn-secondary btn-sm" onClick={downloadCsv}><Download size={14} />Baixar CSV</button></div><div className="data-table-wrapper"><table className="data-table"><thead><tr><th>URL</th><th>Meta Title</th><th>Meta Description</th><th>Status</th></tr></thead><tbody>{results.map(result => <tr key={result.url}><td style={{ maxWidth: 190, wordBreak: 'break-word' }}>{result.url}</td><td>{result.title || '-'}</td><td>{result.description || result.error || '-'}</td><td><span className={`badge ${result.success ? 'badge-success' : 'badge-error'}`}>{result.success ? 'Sucesso' : 'Falha'}</span></td></tr>)}</tbody></table></div></div>}
+      {results.length > 0 && (
+        <div className="card" style={{ marginTop: 28, overflow: 'hidden' }}>
+          <div style={{ padding: '18px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-subtle)' }}>
+            <div>
+              <h2 className="section-title" style={{ fontSize: 16 }}>Resultados</h2>
+              <p className="section-subtitle" style={{ fontSize: 12.5 }}>
+                {results.filter(result => result.success).length} sucessos de {results.length} URLs
+                {results.some(result => result.warning) && (
+                  <span style={{ marginLeft: 8, color: '#fbbf24' }}>
+                    ({results.filter(result => Boolean(result.warning)).length} com aviso)
+                  </span>
+                )}
+              </p>
+            </div>
+            <button className="btn btn-secondary btn-sm" onClick={downloadCsv}>
+              <Download size={14} />Baixar CSV
+            </button>
+          </div>
+          <div className="data-table-wrapper">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>URL</th>
+                  <th>Meta Title</th>
+                  <th>Meta Description</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map(result => {
+                  const isWarning = result.success && Boolean(result.hasWarning || result.warning);
+                  return (
+                    <tr key={result.url}>
+                      <td style={{ maxWidth: 190, wordBreak: 'break-word' }}>{result.url}</td>
+                      <td>
+                        <div>{result.title || '-'}</div>
+                        {result.title && (
+                          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
+                            {result.title.length} caracteres
+                          </div>
+                        )}
+                      </td>
+                      <td>
+                        <div>{result.description || result.error || '-'}</div>
+                        {result.description && (
+                          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
+                            {result.description.length} caracteres
+                          </div>
+                        )}
+                      </td>
+                      <td>
+                        {result.success ? (
+                          isWarning ? (
+                            <div>
+                              <span className="badge badge-warning" title={result.warning}>
+                                Aviso
+                              </span>
+                              {result.warning && (
+                                <p style={{ fontSize: 11, color: '#fbbf24', marginTop: 4, maxWidth: 180, lineHeight: 1.3 }}>
+                                  {result.warning}
+                                </p>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="badge badge-success">Sucesso</span>
+                          )
+                        ) : (
+                          <div>
+                            <span className="badge badge-error">Falha</span>
+                            {result.error && (
+                              <p style={{ fontSize: 11, color: '#fb7185', marginTop: 4, maxWidth: 180, lineHeight: 1.3 }}>
+                                {result.error}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
